@@ -1,0 +1,467 @@
+/* Base Theme - Green & Black like Calc_1 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    background-color: #0d0d0d;
+    color: #39ff14;
+    font-family: 'Courier New', Courier, monospace;
+    overflow: hidden;
+}
+
+/* Screen Layouts */
+#screen-1, #screen-2, #screen-3 {
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+#screen-1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+#screen-2 {
+    display: none;
+    flex-direction: column;
+    padding: 20px;
+}
+
+#screen-3 {
+    display: none;
+    flex-direction: column;
+}
+
+/* Screen 1: Main Menu */
+#glitch-title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-align: center;
+}
+
+.glitch-text {
+    position: relative;
+    color: #39ff14;
+    text-shadow: 
+        2px 2px 0px rgba(255, 0, 0, 0.8),
+        -2px -2px 0px rgba(0, 255, 255, 0.8);
+    animation: glitch-animation 0.1s infinite;
+}
+
+@keyframes glitch-animation {
+    0% {
+        clip-path: inset(0 0 0 0);
+        transform: translate(0);
+    }
+    20% {
+        clip-path: inset(20% 0 30% 0);
+        transform: translate(2px, 2px);
+    }
+    40% {
+        clip-path: inset(0 0 0 0);
+        transform: translate(-2px, -2px);
+    }
+    60% {
+        clip-path: inset(40% 0 20% 0);
+        transform: translate(2px, -2px);
+    }
+    80% {
+        clip-path: inset(0 0 0 0);
+        transform: translate(-2px, 2px);
+    }
+    100% {
+        clip-path: inset(0 0 0 0);
+        transform: translate(0);
+    }
+}
+
+/* Buttons */
+.main-btn {
+    background-color: transparent;
+    color: #39ff14;
+    border: 2px solid #39ff14;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 5px;
+    width: 450px;
+}
+
+.main-btn:hover {
+    background-color: #39ff14;
+    color: #000;
+}
+
+.back-btn {
+    background-color: transparent;
+    color: #39ff14;
+    border: 1px solid #39ff14;
+    padding: 5px 15px;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-right: 20px;
+    transition: 0.2s;
+    align-self: flex-start;
+}
+
+.back-btn:hover {
+    background-color: #ff3333;
+    color: #fff;
+    border-color: #ff3333;
+}
+
+/* Screen 2: Font Selection */
+#screen-2 {
+    justify-content: center;
+    align-items: center;
+}
+
+.font-selection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.font-selection-container h2 {
+    font-size: 1.8rem;
+    color: #39ff14;
+}
+
+/* Screen 3: Editor */
+.editor-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px dashed #39ff14;
+    background-color: #050505;
+}
+
+#document-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #39ff14;
+}
+
+.editor-container {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Tabs Sidebar */
+.tabs-sidebar {
+    width: 280px;
+    background-color: #f0f0f0;
+    border-right: 2px solid #ccc;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.tabs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.tabs-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.add-tab-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    transition: 0.2s;
+}
+
+.add-tab-btn:hover {
+    background-color: #e0e0e0;
+    color: #000;
+}
+
+.tabs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tab-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background-color: #e8e8e8;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.tab-item:hover {
+    background-color: #d0d0d0;
+}
+
+.tab-item.active {
+    background-color: #4a90e2;
+    color: white;
+    font-weight: 600;
+}
+
+.tab-label {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tab-menu-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    font-size: 1rem;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab-menu-btn:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+/* Editor Content Area */
+.editor-content {
+    flex-grow: 1;
+    background-color: #ffffff;
+    padding: 40px;
+    overflow: hidden;
+    display: flex;
+}
+
+#editor-textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 1.2rem;
+    font-family: Wingdings;
+    color: #000;
+    resize: none;
+    overflow-y: auto;
+    padding: 0;
+}
+
+/* Editor Footer */
+.editor-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f0f0f0;
+    border-top: 1px solid #ccc;
+}
+
+.footer-left {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+#font-selector {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+}
+
+#font-selector:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+.control-btn {
+    padding: 8px 16px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.control-btn:hover {
+    background-color: #357abd;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 30px;
+    border: 2px solid #888;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal-section {
+    margin-bottom: 25px;
+}
+
+.modal-section h3 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 12px 20px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: 0.2s;
+    text-align: left;
+}
+
+.modal-btn:hover {
+    background-color: #357abd;
+}
+
+.close-modal-btn {
+    margin-top: 15px;
+    width: 100%;
+}
+
+#import-file {
+    display: none;
+}
+
+/* Scrollbar Styling */
+.tabs-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tabs-sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.tabs-sidebar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.tabs-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+#editor-textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+#editor-textarea::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+#editor-textarea::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+#editor-textarea::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-btn {
+        width: 90%;
+        max-width: 400px;
+    }
+
+    #glitch-title {
+        font-size: 2.5rem;
+    }
+
+    .tabs-sidebar {
+        width: 200px;
+    }
+
+    .editor-content {
+        padding: 20px;
+    }
+}
