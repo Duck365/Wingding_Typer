@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wingding Typer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Screen 1: Main Menu -->
+    <div id="screen-1" class="screen">
+        <div class="menu-container">
+            <h1 id="glitch-title" class="glitch-text">WINGDING TYPER</h1>
+            <button class="main-btn" onclick="goToDocumentMenu()">+ Create new Wingding_typer document</button>
+        </div>
+    </div>
+
+    <!-- Screen 2: Document Selection Menu -->
+    <div id="screen-2" class="screen" style="display: none;">
+        <div class="back-header">
+            <button class="back-btn" onclick="backToMainMenu()">← Back</button>
+        </div>
+        <div class="menu-container">
+            <p class="question-text">What form of wingdings do you want to type in?</p>
+            <button class="main-btn" onclick="openWingdingEditor('simple')">Simple Wingdings</button>
+        </div>
+    </div>
+
+    <!-- Screen 3: Wingding Editor -->
+    <div id="screen-3" class="screen editor-screen" style="display: none;">
+        <div class="editor-container">
+            <!-- Left Sidebar with Tabs -->
+            <div class="tabs-sidebar">
+                <div class="tabs-header">
+                    <span class="tabs-label">Document tabs</span>
+                    <button class="add-tab-btn" onclick="addNewTab()" title="Add new tab">+</button>
+                </div>
+                <div class="tabs-list" id="tabs-list">
+                    <!-- Tabs will be generated here -->
+                </div>
+            </div>
+
+            <!-- Editor Content -->
+            <div class="editor-content">
+                <div class="editor-top-bar">
+                    <button class="back-btn" onclick="backToDocumentMenu()">← Back</button>
+                </div>
+
+                <!-- Main Editor Area -->
+                <div class="editor-area">
+                    <div class="editor-wrapper">
+                        <textarea id="editor-text" class="editor-textarea" placeholder="Start typing..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Bottom Toolbar -->
+                <div class="editor-bottom-bar">
+                    <div class="font-controls">
+                        <label for="font-selector">Font:</label>
+                        <select id="font-selector" onchange="changeFontType()">
+                            <option value="wingdings">Wingdings</option>
+                            <option value="arial">Arial</option>
+                            <option value="comic-sans">Comic Sans MS</option>
+                        </select>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="exportDocument()" title="Export document">📥 Export</button>
+                        <button class="action-btn" onclick="importDocument()" title="Import document">📤 Import</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="file-input" style="display: none;" accept=".wingdoc" onchange="handleFileImport()">
+
+    <script src="script.js"></script>
+</body>
+</html>
