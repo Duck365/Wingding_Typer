@@ -1,346 +1,372 @@
-// Global State
-let currentTab = 0;
-let tabs = [
-    { id: 0, name: 'Tab 1', content: '' }
-];
-let nextTabId = 1;
-let hasUnsavedContent = false;
-let glitchMode = 'normal'; // 'normal' or 'subtle'
-let glitchCooldown = 0;
+// ===== GLITCH EFFECT WITH 10% CHANCE FOR SUBTLE MODE =====
+let glitchIntensity = 'continuous';
+let lastGlitchChange = 0;
 
-// Initialize glitch effect with 10% chance for subtle mode
-function initializeGlitch() {
-    const random = Math.random();
-    if (random < 0.1) {
-        glitchMode = 'subtle';
+function updateGlitchEffect() {
+    const glitchTitle = document.getElementById('glitch-title');
+    if (!glitchTitle) return;
+
+    const now = Date.now();
+    
+    // 10% chance to switch to subtle mode
+    if (glitchIntensity === 'continuous' && Math.random() < 0.1) {
+        glitchIntensity = 'subtle';
+        lastGlitchChange = now;
+    }
+    
+    // Cooldown: 0.5-1 second for subtle mode
+    if (glitchIntensity === 'subtle' && (now - lastGlitchChange) > (500 + Math.random() * 500)) {
+        glitchIntensity = 'continuous';
+    }
+    
+    if (glitchIntensity === 'subtle') {
+        glitchTitle.style.animation = 'glitch-subtle 0.15s infinite';
     } else {
-        glitchMode = 'normal';
+        glitchTitle.style.animation = 'glitch-continuous 0.1s infinite';
     }
 }
 
-// Screen Navigation
+setInterval(updateGlitchEffect, 100);
+
+// Add subtle glitch keyframes dynamically
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes glitch-subtle {
+        0%, 100% { text-shadow: 1px 0 #ff3333, -1px 0 #00ff00; transform: translate(0); }
+        50% { text-shadow: -1px 0 #ff3333, 1px 0 #00ff00; transform: translate(1px, 0); }
+    }
+`;
+document.head.appendChild(style);
+
+// ===== SCREEN NAVIGATION =====
+function showScreen(screenNum) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(`screen-${screenNum}`).classList.add('active');
+}
+
+function goToScreen1() {
+    showScreen(1);
+}
+
 function goToScreen2() {
-    document.getElementById('screen-1').style.display = 'none';
-    document.getElementById('screen-2').style.display = 'flex';
+    showScreen(2);
 }
 
-function goBack() {
-    document.getElementById('screen-2').style.display = 'none';
-    document.getElementById('screen-1').style.display = 'flex';
-}
-
-function startEditor() {
-    document.getElementById('screen-2').style.display = 'none';
-    document.getElementById('screen-3').style.display = 'flex';
+function goToEditor() {
+    showScreen(3);
     initializeEditor();
 }
 
-function goBackToMenu() {
-    document.getElementById('screen-3').style.display = 'none';
-    document.getElementById('screen-1').style.display = 'flex';
-    // Reset editor state
-    tabs = [{ id: 0, name: 'Tab 1', content: '' }];
-    currentTab = 0;
-    nextTabId = 1;
-    hasUnsavedContent = false;
-}
+// ===== DOCUMENT & TAB MANAGEMENT =====
+let documents = [
+    {
+        id: 1,
+        name: 'Tab 1',
+        content: ''
+    }
+];
 
-// Editor Initialization
+let currentTabId = 1;
+let hasUnsavedContent = false;
+
 function initializeEditor() {
     renderTabs();
-    loadTab(0);
-    document.getElementById('editor-textarea').focus();
-    document.getElementById('editor-textarea').addEventListener('input', handleEditorInput);
+    loadTabContent(currentTabId);
 }
 
-// Tab Management
 function renderTabs() {
     const tabsList = document.getElementById('tabs-list');
     tabsList.innerHTML = '';
-
-    tabs.forEach((tab, index) => {
-        const tabElement = document.createElement('div');
-        tabElement.className = `tab-item ${index === currentTab ? 'active' : ''}`;
-        tabElement.onclick = () => switchTab(index);
-
-        const label = document.createElement('span');
-        label.className = 'tab-label';
-        label.textContent = tab.name;
-
-        const menuBtn = document.createElement('button');
-        menuBtn.className = 'tab-menu-btn';
-        menuBtn.textContent = '⋮';
-        menuBtn.onclick = (e) => {
-            e.stopPropagation();
-            openTabMenu(index);
-        };
-
-        tabElement.appendChild(label);
-        tabElement.appendChild(menuBtn);
-        tabsList.appendChild(tabElement);
+    
+    documents.forEach(doc => {
+        const tabItem = document.createElement('button');
+        tabItem.className = `tab-item ${doc.id === currentTabId ? 'active' : ''}`;
+        tabItem.innerHTML = `
+            <span>${doc.name}</span>
+            <button class="tab-delete-btn" onclick="deleteTab(${doc.id}, event)">×</button>
+        `;
+        tabItem.onclick = () => switchTab(doc.id);
+        tabsList.appendChild(tabItem);
     });
-
-    // Check if we can add more tabs
-    if (tabs.length < 15) {
-        const addBtn = document.querySelector('.add-tab-btn');
-        addBtn.style.opacity = '1';
-        addBtn.style.pointerEvents = 'auto';
-    } else {
-        const addBtn = document.querySelector('.add-tab-btn');
-        addBtn.style.opacity = '0.5';
-        addBtn.style.pointerEvents = 'none';
-    }
 }
 
-function switchTab(tabIndex) {
+function switchTab(tabId) {
+    if (currentTabId === tabId) return;
+    
     // Save current tab content
-    tabs[currentTab].content = document.getElementById('editor-textarea').value;
-
-    // Load new tab
-    currentTab = tabIndex;
-    loadTab(tabIndex);
+    const textarea = document.getElementById('editor-textarea');
+    const currentDoc = documents.find(d => d.id === currentTabId);
+    if (currentDoc) currentDoc.content = textarea.value;
+    
+    currentTabId = tabId;
+    loadTabContent(tabId);
     renderTabs();
 }
 
-function loadTab(tabIndex) {
+function loadTabContent(tabId) {
+    const doc = documents.find(d => d.id === tabId);
     const textarea = document.getElementById('editor-textarea');
-    textarea.value = tabs[tabIndex].content;
-    textarea.focus();
+    if (doc) {
+        textarea.value = doc.content;
+        hasUnsavedContent = doc.content.length > 0;
+    }
 }
 
-function addNewTab() {
-    if (tabs.length >= 15) {
+function addTab() {
+    if (documents.length >= 15) {
         alert('Maximum 15 tabs allowed!');
         return;
     }
-
-    const newTab = {
-        id: nextTabId,
-        name: `Tab ${tabs.length + 1}`,
-        content: ''
-    };
-
-    tabs.push(newTab);
-    nextTabId++;
-    switchTab(tabs.length - 1);
-}
-
-function openTabMenu(tabIndex) {
-    // Simple menu - delete or rename
-    const action = prompt(`Tab: ${tabs[tabIndex].name}\n\nEnter new name (or press Cancel to delete):`);
     
-    if (action === null) {
-        // Delete tab
-        if (tabs.length === 1) {
-            alert('Cannot delete the last tab!');
-            return;
-        }
-        tabs.splice(tabIndex, 1);
-        if (currentTab >= tabs.length) currentTab = tabs.length - 1;
-        switchTab(currentTab);
-    } else if (action.trim() !== '') {
-        // Rename tab
-        tabs[tabIndex].name = action.trim();
-        renderTabs();
+    const newId = Math.max(...documents.map(d => d.id), 0) + 1;
+    const tabCount = documents.length + 1;
+    
+    documents.push({
+        id: newId,
+        name: `Tab ${tabCount}`,
+        content: ''
+    });
+    
+    switchTab(newId);
+}
+
+function deleteTab(tabId, event) {
+    event.stopPropagation();
+    
+    if (documents.length <= 1) {
+        alert('You must keep at least one tab!');
+        return;
     }
+    
+    documents = documents.filter(d => d.id !== tabId);
+    
+    if (currentTabId === tabId) {
+        currentTabId = documents[0].id;
+        loadTabContent(currentTabId);
+    }
+    
+    renderTabs();
 }
 
-// Editor Input Handling
-function handleEditorInput() {
-    tabs[currentTab].content = document.getElementById('editor-textarea').value;
-    hasUnsavedContent = checkHasContent();
-}
-
-function checkHasContent() {
-    return tabs.some(tab => tab.content.trim().length > 0);
-}
-
-// Font Family Change
-function changeFontFamily() {
-    const fontFamily = document.getElementById('font-selector').value;
+// ===== FONT SWITCHING =====
+function changeFont() {
+    const fontSelector = document.getElementById('font-selector');
     const textarea = document.getElementById('editor-textarea');
-    textarea.style.fontFamily = fontFamily;
+    textarea.style.fontFamily = `'${fontSelector.value}', sans-serif`;
 }
 
-// Import/Export Modal
-function openImportExportMenu() {
-    document.getElementById('import-export-modal').style.display = 'block';
+// ===== CONTENT TRACKING =====
+const textarea = document.getElementById('editor-textarea');
+if (textarea) {
+    textarea.addEventListener('input', () => {
+        hasUnsavedContent = textarea.value.trim().length > 0;
+    });
 }
 
-function closeImportExportMenu() {
-    document.getElementById('import-export-modal').style.display = 'none';
-    document.getElementById('import-file').value = '';
+// ===== IMPORT/EXPORT MODAL =====
+function openImportExportModal() {
+    document.getElementById('import-export-modal').classList.remove('hidden');
 }
 
-// Export Document
-function exportDocument(format) {
-    const documentData = {
-        tabs: tabs,
-        currentTab: currentTab,
-        timestamp: new Date().toISOString()
-    };
+function closeImportExportModal() {
+    document.getElementById('import-export-modal').classList.add('hidden');
+}
 
-    let content, filename, mimeType;
+function saveCurrentTabBeforeExport() {
+    const textarea = document.getElementById('editor-textarea');
+    const currentDoc = documents.find(d => d.id === currentTabId);
+    if (currentDoc) currentDoc.content = textarea.value;
+}
 
+// ===== DOWNLOAD AS DIFFERENT FORMATS =====
+function downloadAs(format) {
+    saveCurrentTabBeforeExport();
+    
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+    const filename = `wingding_typer_${timestamp}`;
+    
     if (format === 'json') {
-        content = JSON.stringify(documentData, null, 2);
-        filename = 'wingding_document.json';
-        mimeType = 'application/json';
+        downloadJSON(filename);
     } else if (format === 'txt') {
-        // Combine all tabs content
-        content = tabs.map(tab => `=== ${tab.name} ===\n${tab.content}`).join('\n\n');
-        filename = 'wingding_document.txt';
-        mimeType = 'text/plain';
+        downloadTXT(filename);
     } else if (format === 'pdf') {
-        // Simple PDF generation using a library approach
-        content = generatePDF(documentData);
-        filename = 'wingding_document.pdf';
-        mimeType = 'application/pdf';
+        downloadPDF(filename);
     } else if (format === 'docx') {
-        // For now, export as formatted text (a real .docx would need a library)
-        content = generateDocx(documentData);
-        filename = 'wingding_document.docx';
-        mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        downloadDOCX(filename);
     }
-
-    downloadFile(content, filename, mimeType);
-    closeImportExportMenu();
+    
+    closeImportExportModal();
 }
 
-function generatePDF(documentData) {
-    // Simple PDF text content - in a real app, you'd use a library like pdfkit or jsPDF
-    let pdfContent = `%PDF-1.4
-1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
-2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> >>
-endobj
-4 0 obj
-<< /Length 500 >>
-stream
-BT
-/F1 12 Tf
-50 750 Td
-(Wingding Document) Tj
-0 -20 Td
-(${documentData.tabs.map(t => `${t.name}: ${t.content.substring(0, 50)}`).join(' | ')}) Tj
-ET
-endstream
-endobj
-xref
-0 5
-0000000000 65535 f
-0000000009 00000 n
-0000000058 00000 n
-0000000115 00000 n
-0000000273 00000 n
-trailer
-<< /Size 5 /Root 1 0 R >>
-startxref
-823
-%%EOF`;
-    return pdfContent;
+function downloadJSON(filename) {
+    const data = {
+        version: '1.0',
+        createdAt: new Date().toISOString(),
+        currentTabId: currentTabId,
+        currentFont: document.getElementById('font-selector').value,
+        tabs: documents
+    };
+    
+    const jsonString = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    downloadBlob(blob, `${filename}.json`);
 }
 
-function generateDocx(documentData) {
-    // For a simple approach, we'll create a basic Word document structure
-    // A real implementation would need a library like docx.js
-    const text = tabs.map(tab => `${tab.name}\n${tab.content}`).join('\n\n');
-    return text;
+function downloadTXT(filename) {
+    let textContent = '';
+    
+    documents.forEach((doc, index) => {
+        textContent += `\n===== ${doc.name} =====\n`;
+        textContent += doc.content;
+        if (index < documents.length - 1) {
+            textContent += '\n\n';
+        }
+    });
+    
+    const blob = new Blob([textContent], { type: 'text/plain' });
+    downloadBlob(blob, `${filename}.txt`);
 }
 
-function downloadFile(content, filename, mimeType) {
-    let blob;
-    if (mimeType.includes('json') || mimeType.includes('plain') || mimeType.includes('word')) {
-        blob = new Blob([content], { type: mimeType });
-    } else if (mimeType === 'application/pdf') {
-        blob = new Blob([content], { type: 'application/pdf' });
-    } else {
-        blob = new Blob([content], { type: mimeType });
-    }
+function downloadPDF(filename) {
+    saveCurrentTabBeforeExport();
+    
+    let htmlContent = '<html><body style="font-family: Wingdings; margin: 20px;">';
+    
+    documents.forEach((doc, index) => {
+        htmlContent += `<h2>${doc.name}</h2>`;
+        htmlContent += `<p>${doc.content.replace(/\n/g, '<br>')}</p>`;
+        if (index < documents.length - 1) {
+            htmlContent += '<hr style="margin: 30px 0;">';
+        }
+    });
+    
+    htmlContent += '</body></html>';
+    
+    const opt = {
+        margin: 10,
+        filename: `${filename}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+    };
+    
+    html2pdf().set(opt).from(htmlContent).save();
+}
 
-    const url = window.URL.createObjectURL(blob);
+function downloadDOCX(filename) {
+    const sections = documents.map(doc => {
+        const paragraphs = [new docx.Paragraph({ text: doc.name, bold: true, size: 28 })];
+        
+        doc.content.split('\n').forEach(line => {
+            paragraphs.push(new docx.Paragraph({
+                text: line || ' ',
+                size: 24,
+                font: 'Wingdings'
+            }));
+        });
+        
+        paragraphs.push(new docx.Paragraph({ text: '' }));
+        
+        return paragraphs;
+    }).flat();
+    
+    const doc = new docx.Document({
+        sections: [{
+            children: sections
+        }]
+    });
+    
+    docx.Packer.toBlob(doc).then(blob => {
+        downloadBlob(blob, `${filename}.docx`);
+    });
+}
+
+function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
-// Import Document
-function importDocument() {
-    const fileInput = document.getElementById('import-file');
-    const file = fileInput.files[0];
+// ===== IMPORT FUNCTIONALITY =====
+const importFileInput = document.getElementById('import-file');
+if (importFileInput) {
+    importFileInput.addEventListener('change', handleImport);
+}
 
+function handleImport(event) {
+    const file = event.target.files[0];
     if (!file) return;
-
+    
     const reader = new FileReader();
     reader.onload = (e) => {
         try {
-            let importedData;
-
+            let importedData = null;
+            
             if (file.name.endsWith('.json')) {
                 importedData = JSON.parse(e.target.result);
             } else if (file.name.endsWith('.txt')) {
-                // Parse text format
-                const content = e.target.result;
-                const tabSections = content.split(/^===\s*(.+?)\s*===/m);
-                importedData = { tabs: [] };
-
-                for (let i = 1; i < tabSections.length; i += 2) {
-                    importedData.tabs.push({
-                        id: i,
-                        name: tabSections[i].trim(),
-                        content: tabSections[i + 1]?.trim() || ''
-                    });
+                importedData = parseTXTFile(e.target.result);
+            }
+            
+            if (importedData && importedData.tabs) {
+                // Check if ANY tab has content
+                const hasContent = documents.some(doc => doc.content.trim().length > 0);
+                
+                if (hasContent) {
+                    if (confirm('Replace current document with imported file? This cannot be undone.')) {
+                        documents = importedData.tabs;
+                        currentTabId = importedData.currentTabId || documents[0].id;
+                        
+                        if (importedData.currentFont) {
+                            document.getElementById('font-selector').value = importedData.currentFont;
+                        }
+                        
+                        initializeEditor();
+                    }
+                } else {
+                    // No content, just override
+                    documents = importedData.tabs;
+                    currentTabId = importedData.currentTabId || documents[0].id;
+                    
+                    if (importedData.currentFont) {
+                        document.getElementById('font-selector').value = importedData.currentFont;
+                    }
+                    
+                    initializeEditor();
                 }
             }
-
-            // Check if there's unsaved content
-            if (hasUnsavedContent) {
-                const confirmed = confirm(
-                    'You have unsaved changes. Are you sure you want to replace this document?'
-                );
-                if (!confirmed) {
-                    fileInput.value = '';
-                    return;
-                }
-            }
-
-            // Load imported data
-            tabs = importedData.tabs || [];
-            currentTab = importedData.currentTab || 0;
-            nextTabId = Math.max(...tabs.map(t => t.id || 0)) + 1;
-            hasUnsavedContent = false;
-
-            renderTabs();
-            loadTab(currentTab);
-            closeImportExportMenu();
-
-            alert('Document imported successfully!');
         } catch (error) {
-            alert('Error importing document: ' + error.message);
+            alert('Error importing file: ' + error.message);
         }
-
-        fileInput.value = '';
     };
-
     reader.readAsText(file);
+    event.target.value = '';
 }
 
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('import-export-modal');
-    if (event.target === modal) {
-        closeImportExportMenu();
+function parseTXTFile(content) {
+    const tabs = [];
+    const tabRegex = /===== (.+?) =====\n([\s\S]*?)(?=\n===== |$)/g;
+    let match;
+    let tabId = 1;
+    
+    while ((match = tabRegex.exec(content)) !== null) {
+        tabs.push({
+            id: tabId,
+            name: match[1],
+            content: match[2].trim()
+        });
+        tabId++;
     }
-};
-
-// Initialize glitch effect on page load
-window.addEventListener('load', initializeGlitch);
+    
+    return {
+        version: '1.0',
+        tabs: tabs.length > 0 ? tabs : [
+            { id: 1, name: 'Tab 1', content: content }
+        ]
+    };
+}

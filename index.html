@@ -9,73 +9,82 @@
 <body>
 
     <!-- Screen 1: Main Menu -->
-    <div id="screen-1" class="screen">
+    <div id="screen-1" class="screen active">
         <div class="menu-container">
-            <h1 id="glitch-title" class="glitch-text">WINGDING TYPER</h1>
-            <button class="main-btn" onclick="goToDocumentMenu()">+ Create new Wingding_typer document</button>
+            <h1 id="glitch-title" class="glitch-title">WINGDING TYPER</h1>
+            <button class="main-btn" onclick="goToScreen2()">+ Create new Wingding_typer document</button>
         </div>
     </div>
 
-    <!-- Screen 2: Document Selection Menu -->
-    <div id="screen-2" class="screen" style="display: none;">
-        <div class="back-header">
-            <button class="back-btn" onclick="backToMainMenu()">← Back</button>
-        </div>
+    <!-- Screen 2: Font Selection Menu -->
+    <div id="screen-2" class="screen">
         <div class="menu-container">
-            <p class="question-text">What form of wingdings do you want to type in?</p>
-            <button class="main-btn" onclick="openWingdingEditor('simple')">Simple Wingdings</button>
+            <button class="back-btn" onclick="goToScreen1()">⬅ Back</button>
+            <p class="menu-prompt">What form of wingdings do you want to type in?</p>
+            <button class="main-btn" onclick="goToEditor()">Standard Wingdings</button>
         </div>
     </div>
 
-    <!-- Screen 3: Wingding Editor -->
-    <div id="screen-3" class="screen editor-screen" style="display: none;">
+    <!-- Screen 3: Document Editor -->
+    <div id="screen-3" class="screen">
         <div class="editor-container">
+            <!-- Back Button -->
+            <button class="back-btn editor-back" onclick="goToScreen1()">⬅ Back</button>
+
             <!-- Left Sidebar with Tabs -->
             <div class="tabs-sidebar">
                 <div class="tabs-header">
                     <span class="tabs-label">Document tabs</span>
-                    <button class="add-tab-btn" onclick="addNewTab()" title="Add new tab">+</button>
+                    <button class="add-tab-btn" onclick="addTab()" title="Add new tab">+</button>
                 </div>
-                <div class="tabs-list" id="tabs-list">
-                    <!-- Tabs will be generated here -->
-                </div>
+                <div class="tabs-list" id="tabs-list"></div>
             </div>
 
-            <!-- Editor Content -->
+            <!-- Main Editor Area -->
             <div class="editor-content">
-                <div class="editor-top-bar">
-                    <button class="back-btn" onclick="backToDocumentMenu()">← Back</button>
-                </div>
+                <textarea id="editor-textarea" class="editor-textarea" placeholder="Start typing..."></textarea>
+            </div>
 
-                <!-- Main Editor Area -->
-                <div class="editor-area">
-                    <div class="editor-wrapper">
-                        <textarea id="editor-text" class="editor-textarea" placeholder="Start typing..."></textarea>
-                    </div>
-                </div>
-
-                <!-- Bottom Toolbar -->
-                <div class="editor-bottom-bar">
-                    <div class="font-controls">
-                        <label for="font-selector">Font:</label>
-                        <select id="font-selector" onchange="changeFontType()">
-                            <option value="wingdings">Wingdings</option>
-                            <option value="arial">Arial</option>
-                            <option value="comic-sans">Comic Sans MS</option>
-                        </select>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="action-btn" onclick="exportDocument()" title="Export document">📥 Export</button>
-                        <button class="action-btn" onclick="importDocument()" title="Import document">📤 Import</button>
-                    </div>
-                </div>
+            <!-- Bottom Controls -->
+            <div class="bottom-controls">
+                <select id="font-selector" class="font-dropdown" onchange="changeFont()">
+                    <option value="Wingdings">Wingdings</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
+                </select>
+                <button class="control-btn" onclick="openImportExportModal()">📤 Import/Export</button>
             </div>
         </div>
     </div>
 
-    <!-- Hidden file input for import -->
-    <input type="file" id="file-input" style="display: none;" accept=".wingdoc" onchange="handleFileImport()">
+    <!-- Import/Export Modal -->
+    <div id="import-export-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeImportExportModal()">&times;</button>
+            <h2>Import/Export Document</h2>
 
+            <!-- Export Section -->
+            <div class="modal-section">
+                <h3>Export As:</h3>
+                <div class="button-group">
+                    <button class="modal-btn" onclick="downloadAs('json')">📥 JSON</button>
+                    <button class="modal-btn" onclick="downloadAs('txt')">📥 Text</button>
+                    <button class="modal-btn" onclick="downloadAs('pdf')">📥 PDF</button>
+                    <button class="modal-btn" onclick="downloadAs('docx')">📥 Word (.docx)</button>
+                </div>
+            </div>
+
+            <!-- Import Section -->
+            <div class="modal-section">
+                <h3>Import From:</h3>
+                <input type="file" id="import-file" accept=".json,.txt" style="display: none;">
+                <button class="modal-btn" onclick="document.getElementById('import-file').click()">📤 Choose File</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
