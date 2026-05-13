@@ -29,6 +29,7 @@ body, html {
     align-items: center;
     gap: 30px;
     height: 100%;
+    position: relative;
 }
 
 .menu-prompt {
@@ -47,29 +48,6 @@ body, html {
     position: relative;
     color: #39ff14;
     animation: glitch-continuous 0.1s infinite;
-}
-
-@keyframes glitch-continuous {
-    0%, 100% {
-        text-shadow: 2px 0 #ff3333, -2px 0 #00ff00;
-        transform: translate(0);
-    }
-    20% {
-        text-shadow: -2px 0 #ff3333, 2px 0 #00ff00;
-        transform: translate(-2px, 2px);
-    }
-    40% {
-        text-shadow: 2px 0 #ff3333, -2px 0 #00ff00;
-        transform: translate(2px, -2px);
-    }
-    60% {
-        text-shadow: -2px 0 #ff3333, 2px 0 #00ff00;
-        transform: translate(-1px, 1px);
-    }
-    80% {
-        text-shadow: 2px 0 #ff3333, -2px 0 #00ff00;
-        transform: translate(1px, -1px);
-    }
 }
 
 /* Buttons */
@@ -91,7 +69,7 @@ body, html {
     color: #000;
 }
 
-.back-btn {
+.back-btn-menu {
     background-color: transparent;
     color: #39ff14;
     border: 1px solid #39ff14;
@@ -106,102 +84,97 @@ body, html {
     left: 20px;
 }
 
-.back-btn:hover {
+.back-btn-menu:hover {
     background-color: #ff3333;
     color: #fff;
     border-color: #ff3333;
 }
 
-.editor-back {
-    position: fixed;
-    z-index: 100;
+/* =========================================
+   EDITOR SCREEN (Google Docs Style) 
+   ========================================= */
+
+.editor-screen {
+    background-color: #f8f9fa; /* Light grey background */
+    color: #202124;
+    font-family: Arial, sans-serif;
 }
 
-/* Editor Container */
-.editor-container {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    background-color: #fff;
-    position: relative;
-}
-
-/* Tabs Sidebar */
-.tabs-sidebar {
-    width: 280px;
-    background-color: #f5f5f5;
-    border-right: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    padding: 20px 15px;
-    overflow-y: auto;
-}
-
-.tabs-header {
+/* Top Toolbar */
+.top-toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #dadce0;
+    height: 50px;
+    box-sizing: border-box;
 }
 
-.tabs-label {
-    font-size: 0.9rem;
-    color: #5f6368;
-    font-weight: 500;
-}
-
-.add-tab-btn {
-    background: none;
+.toolbar-btn {
+    padding: 8px 16px;
+    background-color: #f1f3f4;
+    color: #3c4043;
     border: none;
-    color: #5f6368;
-    font-size: 1.3rem;
+    border-radius: 4px;
     cursor: pointer;
-    transition: 0.2s;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
 }
 
-.add-tab-btn:hover {
+.toolbar-btn:hover {
+    background-color: #e8eaed;
+}
+
+.font-dropdown {
+    padding: 6px 12px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    background-color: #fff;
     color: #202124;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 3px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    width: 200px;
+}
+
+/* Tab Bar */
+.tab-bar {
+    display: flex;
+    align-items: flex-end;
+    background-color: #e3e5e8;
+    padding: 8px 10px 0 10px;
+    border-bottom: 1px solid #dadce0;
 }
 
 .tabs-list {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    gap: 4px;
+    overflow-x: auto;
 }
 
 .tab-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 12px;
-    background-color: #e8eaed;
+    padding: 8px 16px;
+    background-color: #f1f3f4;
+    border: 1px solid #dadce0;
+    border-bottom: none;
     border-radius: 8px 8px 0 0;
     cursor: pointer;
-    transition: 0.2s;
-    border: none;
-    font-size: 0.95rem;
-    color: #202124;
-    text-align: left;
-    flex: 1;
-}
-
-.tab-item:hover {
-    background-color: #d2d3d7;
+    font-size: 0.9rem;
+    color: #5f6368;
+    min-width: 120px;
 }
 
 .tab-item.active {
-    background-color: #c6c6c6;
-    font-weight: 600;
+    background-color: #ffffff;
+    color: #1a73e8;
+    font-weight: bold;
 }
 
 .tab-delete-btn {
@@ -209,181 +182,71 @@ body, html {
     border: none;
     color: #5f6368;
     cursor: pointer;
-    font-size: 1rem;
-    padding: 0 5px;
-    margin-left: 8px;
-    transition: 0.2s;
+    font-size: 1.2rem;
+    margin-left: 10px;
+    padding: 0 4px;
 }
 
 .tab-delete-btn:hover {
-    color: #d33b27;
+    color: #d93025;
 }
 
-/* Editor Content */
-.editor-content {
+.add-tab-btn {
+    background: none;
+    border: none;
+    color: #5f6368;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 4px 12px;
+    margin-bottom: 4px;
+}
+
+/* Editor Main Area (The Page) */
+.editor-background {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    padding: 40px;
-    overflow: hidden;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 40px 20px;
 }
 
-.editor-textarea {
-    flex: 1;
-    border: none;
+.document-page {
+    width: 816px; /* Standard 8.5x11 ratio width */
+    min-height: 1056px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    padding: 96px; /* 1-inch margins */
+    box-sizing: border-box;
     outline: none;
-    font-family: 'Wingdings', 'Arial', 'Comic Sans MS', sans-serif;
-    font-size: 1.2rem;
-    resize: none;
-    background-color: #fff;
+    font-size: 11pt;
+    line-height: 1.5;
     color: #000;
-    line-height: 1.6;
 }
 
-.editor-textarea::placeholder {
+.document-page[placeholder]:empty:before {
+    content: attr(placeholder);
     color: #999;
 }
 
-/* Bottom Controls */
-.bottom-controls {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    display: flex;
-    gap: 10px;
-}
-
-.font-dropdown {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #202124;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.95rem;
-}
-
-.font-dropdown:hover {
-    background-color: #f5f5f5;
-}
-
-.control-btn {
-    padding: 8px 12px;
-    background-color: #fff;
-    color: #202124;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.95rem;
-    transition: 0.2s;
-}
-
-.control-btn:hover {
-    background-color: #f5f5f5;
-    border-color: #999;
-}
-
-/* Modal */
+/* Modal Styling from your original code remains the same, adjusted slightly for new colors */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    transition: opacity 0.3s;
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000; transition: opacity 0.3s;
 }
-
-.modal.hidden {
-    display: none;
-}
-
+.modal.hidden { display: none; }
 .modal-content {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 90%;
-    position: relative;
+    background-color: #fff; border-radius: 8px; padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); max-width: 500px; width: 90%; position: relative; color: #202124;
 }
-
 .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #5f6368;
-    transition: 0.2s;
+    position: absolute; top: 15px; right: 15px; background: none; border: none;
+    font-size: 1.5rem; cursor: pointer; color: #5f6368;
 }
-
-.close-btn:hover {
-    color: #202124;
-}
-
-.modal-content h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #202124;
-}
-
-.modal-section {
-    margin-bottom: 25px;
-}
-
-.modal-section h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #202124;
-    font-size: 1rem;
-}
-
-.button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
+.modal-section { margin-bottom: 25px; }
+.button-group { display: flex; flex-direction: column; gap: 10px; }
 .modal-btn {
-    padding: 10px 15px;
-    background-color: #f5f5f5;
-    color: #202124;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.95rem;
-    transition: 0.2s;
-}
-
-.modal-btn:hover {
-    background-color: #e8eaed;
-    border-color: #999;
-}
-
-/* Scrollbars */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #999;
+    padding: 10px 15px; background-color: #f5f5f5; color: #202124;
+    border: 1px solid #ddd; border-radius: 4px; cursor: pointer;
 }
