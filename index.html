@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wingding Typer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Anton&family=Atomic+Age&family=Audiowide&family=Average&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Anton&family=Atomic+Age&family=Audiowide&family=Average&family=Permanent+Marker&family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -32,7 +32,7 @@
             </div>
             <div class="toolbar-center">
                 <select id="font-selector" class="font-dropdown" onchange="applyFont()">
-                    <option value="Wingdings" selected>Wingdings</option>
+                    <option value="Wingdings" selected>Standard Wingdings</option>
                     <option value="Arial">Arial</option>
                     <option value="Comic Sans MS">Comic Sans MS</option>
                     <option value="Atomic Age">Atomic Age</option>
@@ -40,6 +40,8 @@
                     <option value="Aldrich">Aldrich</option>
                     <option value="Anton">Anton</option>
                     <option value="Average">Average</option>
+                    <option value="'Permanent Marker'">Permanent Marker</option>
+                    <option value="'Press Start 2P'">Press Start 2P</option>
                 </select>
             </div>
             <div class="toolbar-right">
@@ -61,7 +63,6 @@
         <div class="modal-content">
             <button class="close-btn" onclick="closeImportExportModal()">&times;</button>
             <h2>Import/Export Document</h2>
-
             <div class="modal-section">
                 <h3>Export As:</h3>
                 <div class="button-group">
@@ -71,7 +72,6 @@
                     <button class="modal-btn" onclick="downloadAs('docx')">📥 Word (.docx)</button>
                 </div>
             </div>
-
             <div class="modal-section">
                 <h3>Import From:</h3>
                 <input type="file" id="import-file" accept=".json,.txt" style="display: none;">
