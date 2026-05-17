@@ -20,7 +20,8 @@
         <div class="menu-container">
             <button class="back-btn-menu" onclick="goToScreen1()">⬅ Back</button>
             <p class="menu-prompt">What form of wingdings do you want to type in?</p>
-            <button class="main-btn" onclick="goToEditor()">Standard Wingdings</button>
+            <button class="main-btn" onclick="goToEditor('Wingdings')">Standard Wingdings</button>
+            <button class="main-btn" onclick="goToEditor('Simple Uni-Shapes')">Simple Uni-Shapes</button>
         </div>
     </div>
 
@@ -32,7 +33,8 @@
             </div>
             <div class="toolbar-center">
                 <select id="font-selector" class="font-dropdown" onchange="applyFont()">
-                    <option value="Wingdings" selected>Standard Wingdings</option>
+                    <option value="Wingdings">Standard Wingdings</option>
+                    <option value="Simple Uni-Shapes">Simple Uni-Shapes</option>
                     <option value="Arial">Arial</option>
                     <option value="Comic Sans MS">Comic Sans MS</option>
                     <option value="Atomic Age">Atomic Age</option>
