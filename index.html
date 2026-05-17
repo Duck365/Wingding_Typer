@@ -22,6 +22,7 @@
             <p class="menu-prompt">What form of wingdings do you want to type in?</p>
             <button class="main-btn" onclick="goToEditor('Wingdings')">Standard Wingdings</button>
             <button class="main-btn" onclick="goToEditor('Simple Uni-Shapes')">Simple Uni-Shapes</button>
+            <button class="main-btn" onclick="goToEditor('Emojin')">Emojin</button>
         </div>
     </div>
 
@@ -35,6 +36,7 @@
                 <select id="font-selector" class="font-dropdown" onchange="applyFont()">
                     <option value="Wingdings">Standard Wingdings</option>
                     <option value="Simple Uni-Shapes">Simple Uni-Shapes</option>
+                    <option value="Emojin">Emojin</option>
                     <option value="Arial">Arial</option>
                     <option value="Comic Sans MS">Comic Sans MS</option>
                     <option value="Atomic Age">Atomic Age</option>
@@ -86,7 +88,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
     
     <script src="languages.js"></script>
-    
     <script src="script.js"></script>
 </body>
 </html>
