@@ -20,14 +20,25 @@ const customLanguages = {
         // Numbers
         '1': '↑', '2': '↓', '3': '←', '4': '→', '5': '／', 
         '6': '＼', '7': '＋', '8': '✕', '9': '‖', '0': '⧺'
+    },
+
+    // NEW LANGUAGE: Emojin
+    'Emojin': {
+        // Uppercase
+        'A': '😀', 'B': '😃', 'C': '😄', 'D': '😁', 'E': '😆', 'F': '🙃',
+        'G': '🙂', 'H': '😉', 'I': '😌', 'J': '😏', 'K': '😋', 'L': '😔',
+        'M': '😬', 'N': '😑', 'O': '😐', 'P': '🤐', // <--- Placeholder for P
+        'Q': '😶', 'R': '🤨', 'S': '🙄', 'T': '😠', 'U': '😞', 'V': '😟',
+        'W': '☹', 'X': '🫤', 'Y': '😮', 'Z': '😵',
+
+        // Lowercase (Mapped to the exact same emojis)
+        'a': '😀', 'b': '😃', 'c': '😄', 'd': '😁', 'e': '😆', 'f': '🙃',
+        'g': '🙂', 'h': '😉', 'i': '😌', 'j': '😏', 'k': '😋', 'l': '😔',
+        'm': '😬', 'n': '😑', 'o': '😐', 'p': '🤐',
+        'q': '😶', 'r': '🤨', 's': '🙄', 't': '😠', 'u': '😞', 'v': '😟',
+        'w': '☹', 'x': '🫤', 'y': '😮', 'z': '😵'
     }
 
-    // When you make a new language, you can add it right here! Example:
-    /*
-    , 'Alien Script': {
-        'A': '⍙', 'B': '⍚', 'C': '⍜'
-    }
-    */
 };
 
 // This master listener handles ALL languages listed above automatically!
