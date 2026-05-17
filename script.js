@@ -38,8 +38,11 @@ function showScreen(screenNum) {
 }
 function goToScreen1() { showScreen(1); }
 function goToScreen2() { showScreen(2); }
-function goToEditor() {
+
+// Updated to know WHICH language you picked from the menu
+function goToEditor(mode) {
     showScreen(3);
+    document.getElementById('font-selector').value = mode;
     initializeEditor();
     applyFont(); 
 }
@@ -182,8 +185,46 @@ function applyFont() {
         selection.addRange(savedRange);
     }
     
-    document.execCommand('fontName', false, fontSelector.value);
+    // If it is our custom language, switch to Arial so the shapes render perfectly
+    if (fontSelector.value === 'Simple Uni-Shapes') {
+        document.execCommand('fontName', false, 'Arial');
+    } else {
+        document.execCommand('fontName', false, fontSelector.value);
+    }
 }
+
+// ===== CUSTOM LANGUAGE TRANSLATOR (SIMPLE UNI-SHAPES) =====
+const uniShapesMap = {
+    // Uppercase
+    'A': '◯', 'B': '●', 'C': '◓', 'D': '◠', 'E': '◒', 'F': '◡',
+    'G': '△', 'H': '▲', 'I': '∧', 'J': '▽', 'K': '▼', 'L': '∨',
+    'M': '◁', 'N': '◀', 'O': '＜', 'P': '▷', 'Q': '▶', 'R': '＞',
+    'S': '┏', 'T': '┓', 'U': '┗', 'V': '┛', 'W': '□', 'X': '■',
+    'Y': '◇', 'Z': '◆',
+    // Lowercase mappings (so you don't have to hold shift)
+    'a': '◯', 'b': '●', 'c': '◓', 'd': '◠', 'e': '◒', 'f': '◡',
+    'g': '△', 'h': '▲', 'i': '∧', 'j': '▽', 'k': '▼', 'l': '∨',
+    'm': '◁', 'n': '◀', 'o': '＜', 'p': '▷', 'q': '▶', 'r': '＞',
+    's': '┏', 't': '┓', 'u': '┗', 'v': '┛', 'w': '□', 'x': '■',
+    'y': '◇', 'z': '◆'
+};
+
+document.addEventListener('keydown', function(e) {
+    const fontSelector = document.getElementById('font-selector');
+    const editor = document.getElementById('editor-content');
+    
+    // If we are typing in the editor AND the mode is Simple Uni-Shapes
+    if (document.activeElement === editor && fontSelector.value === 'Simple Uni-Shapes') {
+        
+        // Check if the key pressed is in our mapping dictionary AND not a copy/paste shortcut
+        if (uniShapesMap[e.key] && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.preventDefault(); // Stop the normal letter from appearing
+            // Inject our custom shape instead!
+            document.execCommand('insertText', false, uniShapesMap[e.key]);
+        }
+    }
+});
+
 
 // ===== IMPORT/EXPORT MODAL =====
 function openImportExportModal() {
