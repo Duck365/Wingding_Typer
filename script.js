@@ -235,10 +235,16 @@ function downloadTXT(filename) {
 }
 
 function downloadPDF(filename) {
-    let htmlContent = '<div style="font-family: Arial; padding: 20px; color: #000000; background-color: #ffffff;">';
+    // 1. THE FIX: We add a "Font Stack". If Arial doesn't have the shape, 
+    // it moves down the list to Apple Emoji, then Windows Emoji, etc., until it finds it!
+    const fontStack = "'Arial', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif";
+    
+    let htmlContent = `<div style="font-family: ${fontStack}; padding: 20px; color: #000000; background-color: #ffffff;">`;
+    
     documents.forEach((doc, index) => {
         htmlContent += `<h2>${doc.emoji || '📄'} ${doc.name}</h2>`;
-        htmlContent += `<div style="color: #000000;">${doc.content}</div>`;
+        // Added white-space: pre-wrap so your spaces and line breaks export perfectly too!
+        htmlContent += `<div style="color: #000000; white-space: pre-wrap; word-wrap: break-word;">${doc.content}</div>`;
         if (index < documents.length - 1) htmlContent += '<hr style="margin: 30px 0;">';
     });
     htmlContent += '</div>';
@@ -246,10 +252,13 @@ function downloadPDF(filename) {
     const opt = {
         margin: 10,
         filename: `${filename}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        image: { type: 'jpeg', quality: 1 },
+        // 2. THE FIX: We turn on 'letterRendering' and 'useCORS' to force the canvas engine 
+        // to draw complex Unicode shapes as exact images before making the PDF.
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true }, 
         jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
     };
+    
     html2pdf().set(opt).from(htmlContent).save();
 }
 
