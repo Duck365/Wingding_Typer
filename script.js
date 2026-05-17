@@ -193,44 +193,6 @@ function applyFont() {
     }
 }
 
-// ===== CUSTOM LANGUAGE TRANSLATOR (SIMPLE UNI-SHAPES) =====
-const uniShapesMap = {
-    // Uppercase
-    'A': '◯', 'B': '●', 'C': '◓', 'D': '◠', 'E': '◒', 'F': '◡',
-    'G': '△', 'H': '▲', 'I': '∧', 'J': '▽', 'K': '▼', 'L': '∨',
-    'M': '◁', 'N': '◀', 'O': '＜', 'P': '▷', 'Q': '▶', 'R': '＞',
-    'S': '┏', 'T': '┓', 'U': '┗', 'V': '┛', 'W': '□', 'X': '■',
-    'Y': '◇', 'Z': '◆',
-    
-    // Lowercase (Distinct smaller shapes/light lines)
-    'a': '○', 'b': '•', 'c': '◓', 'd': '◠', 'e': '◒', 'f': '◡',
-    'g': '▵', 'h': '▴', 'i': '⌃', 'j': '▿', 'k': '▾', 'l': '⌄',
-    'm': '◃', 'n': '◂', 'o': '<', 'p': '▹', 'q': '▸', 'r': '>',
-    's': '┌', 't': '┐', 'u': '└', 'v': '┘', 'w': '▫', 'x': '▪',
-    'y': '⋄', 'z': '⬩',
-
-    // Numbers (Arrows, Slashes, and Symbols)
-    '1': '↑', '2': '↓', '3': '←', '4': '→', '5': '／', 
-    '6': '＼', '7': '＋', '8': '✕', '9': '‖', '0': '⧺'
-};
-
-document.addEventListener('keydown', function(e) {
-    const fontSelector = document.getElementById('font-selector');
-    const editor = document.getElementById('editor-content');
-    
-    // If we are typing in the editor AND the mode is Simple Uni-Shapes
-    if (document.activeElement === editor && fontSelector.value === 'Simple Uni-Shapes') {
-        
-        // Check if the key pressed is in our mapping dictionary AND not a copy/paste shortcut
-        if (uniShapesMap[e.key] && !e.ctrlKey && !e.metaKey && !e.altKey) {
-            e.preventDefault(); // Stop the normal letter from appearing
-            // Inject our custom shape instead!
-            document.execCommand('insertText', false, uniShapesMap[e.key]);
-        }
-    }
-});
-
-
 // ===== IMPORT/EXPORT MODAL =====
 function openImportExportModal() {
     document.getElementById('import-export-modal').classList.remove('hidden');
