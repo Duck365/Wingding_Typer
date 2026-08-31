@@ -7,6 +7,18 @@ function updateGlitchEffect() {
     if (!glitchTitle) return;
 
     const now = Date.now();
+    
+    // NEW: Randomly trigger a severe glitch and swap to Wingdings font
+    if (Math.random() < 0.03) { // 3% chance every 100ms to trigger
+        glitchTitle.style.fontFamily = 'Wingdings';
+        glitchTitle.style.animation = 'glitch-severe 0.1s infinite';
+        
+        // Set it back to normal after a split second (150ms)
+        setTimeout(() => {
+            glitchTitle.style.fontFamily = "'Courier New', Courier, monospace";
+        }, 150); 
+    }
+
     if (glitchIntensity === 'continuous' && Math.random() < 0.1) {
         glitchIntensity = 'subtle';
         lastGlitchChange = now;
@@ -14,10 +26,14 @@ function updateGlitchEffect() {
     if (glitchIntensity === 'subtle' && (now - lastGlitchChange) > (500 + Math.random() * 500)) {
         glitchIntensity = 'continuous';
     }
-    if (glitchIntensity === 'subtle') {
-        glitchTitle.style.animation = 'glitch-subtle 0.15s infinite';
-    } else {
-        glitchTitle.style.animation = 'glitch-continuous 0.1s infinite';
+    
+    // Only update standard animation if it's not currently in the middle of a severe Wingdings glitch
+    if (glitchTitle.style.fontFamily !== 'Wingdings') {
+        if (glitchIntensity === 'subtle') {
+            glitchTitle.style.animation = 'glitch-subtle 0.15s infinite';
+        } else {
+            glitchTitle.style.animation = 'glitch-continuous 0.1s infinite';
+        }
     }
 }
 setInterval(updateGlitchEffect, 100);
@@ -27,6 +43,14 @@ style.textContent = `
     @keyframes glitch-subtle {
         0%, 100% { text-shadow: 1px 0 #ff3333, -1px 0 #00ff00; transform: translate(0); }
         50% { text-shadow: -1px 0 #ff3333, 1px 0 #00ff00; transform: translate(1px, 0); }
+    }
+    /* NEW: Severe glitch animation for the split-second jumps */
+    @keyframes glitch-severe {
+        0% { text-shadow: 3px 0 #ff3333, -3px 0 #00ff00; transform: translate(3px, -2px) skewX(15deg); }
+        25% { text-shadow: -4px 0 #ff3333, 4px 0 #00ff00; transform: translate(-3px, 2px) skewX(-15deg); }
+        50% { text-shadow: 4px 0 #00ff00, -4px 0 #0000ff; transform: translate(3px, 0) scale(1.1); }
+        75% { text-shadow: -3px 0 #ff3333, 3px 0 #00ff00; transform: translate(-3px, -1px) skewX(5deg); }
+        100% { text-shadow: 2px 0 #ff3333, -2px 0 #00ff00; transform: translate(0); }
     }
 `;
 document.head.appendChild(style);
