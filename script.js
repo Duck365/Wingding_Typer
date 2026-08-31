@@ -106,10 +106,23 @@ function renderTabs() {
 
 function toggleTabMenu(tabId, event) {
     event.stopPropagation();
+    
+    // Close all other menus first
     document.querySelectorAll('.tab-dropdown').forEach(menu => {
         if (menu.id !== `tab-menu-${tabId}`) menu.classList.remove('show');
     });
+    
     const menu = document.getElementById(`tab-menu-${tabId}`);
+    const btn = event.target;
+    
+    // THE FIX: Calculate exactly where the 3-dots button is on the screen
+    const rect = btn.getBoundingClientRect();
+    
+    // Force the menu to stick to the screen relative to the button, bypassing the overflow trap
+    menu.style.position = 'fixed';
+    menu.style.top = `${rect.bottom + 5}px`; // Drops it 5px below the button
+    menu.style.left = `${rect.left}px`;
+    
     menu.classList.toggle('show');
 }
 
