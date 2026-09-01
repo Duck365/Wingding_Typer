@@ -59,9 +59,27 @@ setInterval(updateGlitchEffect, 100);
 // Just in case you didn't keep the style block from last time, here it is:
 const style = document.createElement('style');
 style.textContent = `
+    /* The reality-breaking, aggressive glitch */
+    @keyframes glitch-continuous {
+        0% { text-shadow: 3px 0 #ff0000, -3px 0 #00ffff; transform: translate(0) skew(0deg); clip-path: inset(10% 0 80% 0); }
+        10% { text-shadow: -5px 0 #ff0000, 4px 0 #00ffff; transform: translate(-5px, 2px) skew(-15deg); clip-path: inset(40% 0 43% 0); }
+        20% { text-shadow: 5px 0 #39ff14, -5px 0 #ff00ff; transform: translate(5px, -3px) skew(20deg); clip-path: inset(80% 0 5% 0); }
+        30% { text-shadow: -4px 0 #ff0000, 3px 0 #00ffff; transform: translate(0) skew(0deg); clip-path: inset(20% 0 50% 0); }
+        40% { text-shadow: 4px 3px #39ff14, -4px -3px #ff00ff; transform: translate(3px, 3px) skew(10deg); clip-path: inset(60% 0 10% 0); }
+        50% { text-shadow: -5px -3px #ff0000, 5px 3px #00ffff; transform: translate(-3px, -3px) skew(-10deg); clip-path: inset(15% 0 70% 0); }
+        60% { text-shadow: 3px 0 #39ff14, -3px 0 #ff00ff; transform: translate(5px, 0) skew(25deg); clip-path: inset(90% 0 0% 0); }
+        70% { text-shadow: -4px 0 #ff0000, 4px 0 #00ffff; transform: translate(-4px, 4px) skew(-20deg); clip-path: inset(30% 0 40% 0); }
+        80% { text-shadow: 5px -3px #39ff14, -5px 3px #ff00ff; transform: translate(3px, -5px) skew(15deg); clip-path: inset(5% 0 80% 0); }
+        90% { text-shadow: -3px 3px #ff0000, 3px -3px #00ffff; transform: translate(-5px, 0) skew(-25deg); clip-path: inset(50% 0 30% 0); }
+        100% { text-shadow: 3px 0 #39ff14, -3px 0 #ff00ff; transform: translate(0) skew(0deg); clip-path: inset(10% 0 80% 0); }
+    }
+
+    /* The "calm before the storm" subtle glitch */
     @keyframes glitch-subtle {
-        0%, 100% { text-shadow: 1px 0 #ff3333, -1px 0 #00ff00; transform: translate(0); }
-        50% { text-shadow: -1px 0 #ff3333, 1px 0 #00ff00; transform: translate(1px, 0); }
+        0%, 100% { text-shadow: 2px 0 #ff3333, -2px 0 #00ff00; transform: translate(0) skew(0deg); clip-path: inset(0 0 0 0); }
+        25% { transform: translate(1px, -1px) skew(2deg); }
+        50% { text-shadow: -2px 0 #ff3333, 2px 0 #00ff00; transform: translate(-1px, 1px) skew(-2deg); }
+        75% { transform: translate(-1px, -1px) skew(1deg); }
     }
 `;
 if (!document.querySelector('style[data-glitch]')) {
