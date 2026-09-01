@@ -2,23 +2,44 @@
 let glitchIntensity = 'continuous';
 let lastGlitchChange = 0;
 
+// 1. Break the title into individual letters so we can target them
+const titleElement = document.getElementById('glitch-title');
+if (titleElement && !titleElement.hasAttribute('data-split')) {
+    const text = titleElement.innerText;
+    titleElement.innerHTML = ''; // Clear the original text
+    
+    for (let char of text) {
+        const span = document.createElement('span');
+        span.innerText = char;
+        titleElement.appendChild(span);
+    }
+    titleElement.setAttribute('data-split', 'true'); // Prevents running this loop twice
+}
+
 function updateGlitchEffect() {
     const glitchTitle = document.getElementById('glitch-title');
     if (!glitchTitle) return;
 
     const now = Date.now();
+    const letters = glitchTitle.querySelectorAll('span');
     
-    // NEW: Randomly trigger a severe glitch and swap to Wingdings font
-    if (Math.random() < 0.03) { // 3% chance every 100ms to trigger
-        glitchTitle.style.fontFamily = 'Wingdings';
-        glitchTitle.style.animation = 'glitch-severe 0.1s infinite';
+    // 2. Randomly pick ONE letter to glitch into Wingdings (about 15% chance every 100ms)
+    if (letters.length > 0 && Math.random() < 0.15) { 
+        const randomIdx = Math.floor(Math.random() * letters.length);
+        const targetLetter = letters[randomIdx];
         
-        // Set it back to normal after a split second (150ms)
-        setTimeout(() => {
-            glitchTitle.style.fontFamily = "'Courier New', Courier, monospace";
-        }, 150); 
+        // Make sure it doesn't try to change the font of a blank space
+        if (targetLetter.innerText !== ' ') {
+            targetLetter.style.fontFamily = 'Wingdings';
+            
+            // Snap it back to the normal Courier font after a split second
+            setTimeout(() => {
+                targetLetter.style.fontFamily = "inherit";
+            }, 150);
+        }
     }
 
+    // 3. Keep the main shaking animation running on the whole title
     if (glitchIntensity === 'continuous' && Math.random() < 0.1) {
         glitchIntensity = 'subtle';
         lastGlitchChange = now;
@@ -27,33 +48,26 @@ function updateGlitchEffect() {
         glitchIntensity = 'continuous';
     }
     
-    // Only update standard animation if it's not currently in the middle of a severe Wingdings glitch
-    if (glitchTitle.style.fontFamily !== 'Wingdings') {
-        if (glitchIntensity === 'subtle') {
-            glitchTitle.style.animation = 'glitch-subtle 0.15s infinite';
-        } else {
-            glitchTitle.style.animation = 'glitch-continuous 0.1s infinite';
-        }
+    if (glitchIntensity === 'subtle') {
+        glitchTitle.style.animation = 'glitch-subtle 0.15s infinite';
+    } else {
+        glitchTitle.style.animation = 'glitch-continuous 0.1s infinite';
     }
 }
 setInterval(updateGlitchEffect, 100);
 
+// Just in case you didn't keep the style block from last time, here it is:
 const style = document.createElement('style');
 style.textContent = `
     @keyframes glitch-subtle {
         0%, 100% { text-shadow: 1px 0 #ff3333, -1px 0 #00ff00; transform: translate(0); }
         50% { text-shadow: -1px 0 #ff3333, 1px 0 #00ff00; transform: translate(1px, 0); }
     }
-    /* NEW: Severe glitch animation for the split-second jumps */
-    @keyframes glitch-severe {
-        0% { text-shadow: 3px 0 #ff3333, -3px 0 #00ff00; transform: translate(3px, -2px) skewX(15deg); }
-        25% { text-shadow: -4px 0 #ff3333, 4px 0 #00ff00; transform: translate(-3px, 2px) skewX(-15deg); }
-        50% { text-shadow: 4px 0 #00ff00, -4px 0 #0000ff; transform: translate(3px, 0) scale(1.1); }
-        75% { text-shadow: -3px 0 #ff3333, 3px 0 #00ff00; transform: translate(-3px, -1px) skewX(5deg); }
-        100% { text-shadow: 2px 0 #ff3333, -2px 0 #00ff00; transform: translate(0); }
-    }
 `;
-document.head.appendChild(style);
+if (!document.querySelector('style[data-glitch]')) {
+    style.setAttribute('data-glitch', 'true');
+    document.head.appendChild(style);
+}
 
 // ===== SCREEN NAVIGATION =====
 function showScreen(screenNum) {
